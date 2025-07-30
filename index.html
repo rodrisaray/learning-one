@@ -118,3 +118,33 @@ Simple English helps everyone create high-quality, optimized content that is eas
   <footer class="bg-gray-900 text-gray-300 text-center py-6 text-sm">
     <p>&copy; 2025 Simple Digital Growth. Built with Blogger, Tailwind CSS & Cloudflare Pages.</p>
   </footer>
+
+    <!-- 🔹 Blogger Feed Script -->
+  <script>
+    const blogFeed = document.getElementById("blogFeed");
+    const bloggerFeedUrl = "https://yourblogname.blogspot.com/feeds/posts/default?alt=json&max-results=3"; // 🔁 Replace with your Blogger blog URL
+
+    fetch(bloggerFeedUrl)
+      .then(res => res.json())
+      .then(data => {
+        const entries = data.feed.entry || [];
+        entries.forEach(entry => {
+          const title = entry.title.$t;
+          const link = entry.link.find(l => l.rel === 'alternate').href;
+          const published = new Date(entry.published.$t).toLocaleDateString();
+
+          const postHTML = `
+            <a href="${link}" target="_blank" rel="noopener noreferrer"
+              class="block p-6 bg-gray-50 rounded-lg shadow hover:shadow-lg transition">
+              <h4 class="text-lg font-semibold mb-2 text-gray-800">${title}</h4>
+              <p class="text-sm text-gray-500">${published}</p>
+            </a>
+          `;
+          blogFeed.innerHTML += postHTML;
+        });
+      })
+      .catch(err => {
+        blogFeed.innerHTML = "<p class='text-red-500'>Unable to load posts. Check your Blogger feed URL.</p>";
+        console.error("Blogger feed error:", err);
+      });
+  </script>
